@@ -2,11 +2,11 @@ package com.lightsensor.model;
 
 import java.util.ArrayList;
 
-import com.lightsensor.OnChangeListener;
+import com.lightsensor.ISensorObservable;
 
 public class LuxVo {
 	
-	private final ArrayList<OnChangeListener> mListeners = new ArrayList<OnChangeListener>();
+	private final ArrayList<ISensorObservable> mListeners = new ArrayList<ISensorObservable>();
 	
 	private float mValue;
 	
@@ -19,17 +19,17 @@ public class LuxVo {
 		notifyListeners();
 	}
 	
-	public void addListener(OnChangeListener listener){
+	public void addListener(ISensorObservable listener){
 		mListeners.add(listener);
 	}
 	
-	public void removeListener(OnChangeListener listener){
+	public void removeListener(ISensorObservable listener){
 		mListeners.remove(listener);
 	}
 	
 	private void notifyListeners(){
-		for(OnChangeListener listener : mListeners){
-			listener.onChange(this);
+		for(ISensorObservable listener : mListeners){
+			listener.onValueChanged(this);
 		}
 	}
 	

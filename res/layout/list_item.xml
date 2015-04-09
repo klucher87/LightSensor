@@ -27,6 +27,7 @@
     	android:layout_marginRight="20dp" 
     	android:textSize="20sp"
     	android:textColor="#929497"
+    	android:clickable="false"
     	android:layout_centerVertical="true"
     	/>
     	

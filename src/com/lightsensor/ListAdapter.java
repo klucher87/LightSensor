@@ -47,7 +47,7 @@ public class ListAdapter extends ArrayAdapter<PhoneVo> implements OnItemClickLis
 		int color = ((position % 2) == 0) ? 0xFFF0FFE1 : 0xFFFFFFFF;
 		convertView.setBackgroundColor(color);
 		holder.label.setText(counter.getLabel());
-		holder.checkbox.setChecked(counter.isChecked());
+		holder.checkbox.setChecked(counter.isSelected());
 		return convertView;
 	}
 
@@ -58,11 +58,11 @@ public class ListAdapter extends ArrayAdapter<PhoneVo> implements OnItemClickLis
 
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-		boolean isChecked = getItem(position).isChecked();
+		boolean isChecked = getItem(position).isSelected();
 		for(int i = 0; i<getCount(); i++){
-			getItem(i).setChecked(false);
+			getItem(i).setSelected(false);
 		}
-		getItem(position).setChecked(!isChecked);
+		getItem(position).setSelected(!isChecked);
 		notifyDataSetChanged();
 	}
 }

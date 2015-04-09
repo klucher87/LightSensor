@@ -5,7 +5,7 @@ public class PhoneVo {
 	
 	private int id = -1;
 	private String label = "";
-	private boolean mIsChecked = false;
+	private boolean mIsSelected = false;
 	
 	public int getId() {
 		return id;
@@ -21,23 +21,11 @@ public class PhoneVo {
 		this.label = label;
 	}
 	
-	public boolean isChecked() {
-		return mIsChecked;
+	public boolean isSelected() {
+		return mIsSelected;
 	}
-	public void setChecked(boolean isChecked) {
-		mIsChecked = isChecked;
-	}
-	
-	@Override
-	synchronized public PhoneVo clone() {
-		PhoneVo vo = new PhoneVo();
-		vo.setId(id);
-		vo.setLabel(label);
-		return vo;
+	public void setSelected(boolean isChecked) {
+		mIsSelected = isChecked;
 	}
 	
-	synchronized public void consume(PhoneVo vo) {
-		this.id = vo.getId();
-		this.label = vo.getLabel();
-	}
 }

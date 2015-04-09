@@ -17,13 +17,11 @@ import android.widget.TextView;
 import com.example.luxsensor.R;
 import com.lightsensor.controller.Controller;
 import com.lightsensor.model.LuxVo;
-import com.lightsensor.model.PhoneVo;
 
 public class MainActivity extends Activity implements SensorEventListener,
-		OnChangeListener {
+		ISensorObservable {
 
 	private static final String TAG = "KM";
-	private static final int REQUEST = 99;
 
 	private SensorManager mSensorManager;
 	private Sensor mLight;
@@ -31,6 +29,7 @@ public class MainActivity extends Activity implements SensorEventListener,
 	private TextView mCurrVal, mAddedVal;
 	private Button mOpen;
 	private TextView mCurrCalibration;
+	LuxVo vo;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -46,13 +45,13 @@ public class MainActivity extends Activity implements SensorEventListener,
 		mOpen.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				startActivityForResult(new Intent(MainActivity.this, ListActivity.class), REQUEST);
+				startActivity(new Intent(MainActivity.this, ListActivity.class));
 			}
 		});
 	
-		LuxVo vo = new LuxVo();
-		vo.addListener(this);
-		mController = Controller.getInstance();
+		vo = new LuxVo();
+		
+		mController = Controller.getInstance(getApplicationContext());
 		mController.setModel(vo);
 		
 	}
@@ -84,24 +83,19 @@ public class MainActivity extends Activity implements SensorEventListener,
 		super.onResume();
 		mSensorManager.registerListener(this, mLight,
 				SensorManager.SENSOR_DELAY_NORMAL);
-		String label = "brak";
-		for(PhoneVo item : mController.getItems()){
-			if(item.isChecked()){
-				label = item.getLabel();
-				break;
-			}
-		}
-       	mCurrCalibration.setText(label);		
+		vo.addListener(this);
+       	mCurrCalibration.setText(mController.getSelecteditemLabel());		
 	}
 
 	@Override
 	protected void onPause() {
 		super.onPause();
 		mSensorManager.unregisterListener(this);
+		vo.removeListener(this);
 	}
 
 	@Override
-	public void onChange(LuxVo model) {
+	public void onValueChanged(LuxVo model) {
 		mCurrVal.setText(Float.toString(model.getValue()));
 		mAddedVal.setText(Float.toString(model.getValue() + 3));
 	}

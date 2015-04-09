@@ -1,4 +1,4 @@
-package com.lightsensor;
+package com.lightsensor.regression;
 
 /*************************************************************************
  *  
