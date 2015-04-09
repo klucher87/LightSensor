@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import com.lightsensor.ISensorObservable;
 
-public class LuxVo {
+public class SensorVo {
 	
 	private final ArrayList<ISensorObservable> mListeners = new ArrayList<ISensorObservable>();
 	

@@ -1,4 +1,4 @@
-package com.lightsensor.dao;
+package com.lightsensor.daos;
 
 import java.util.ArrayList;
 
@@ -7,9 +7,9 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.lightsensor.model.PhoneVo;
+import com.lightsensor.model.CalibrationVo;
 
-public class PhoneDao {
+public class CalibrationDao {
 	
 	protected static final String TABLE = "Phone";
 	protected static final String _ID = "_id";
@@ -17,16 +17,16 @@ public class PhoneDao {
 	
 	private Context mContext;
 	
-	public PhoneDao(Context ctx) {
+	public CalibrationDao(Context ctx) {
 		mContext = ctx;
 	}
 	
-	public ArrayList<PhoneVo> getAll() {
-		ArrayList<PhoneVo> list = new ArrayList<PhoneVo>();
+	public ArrayList<CalibrationVo> getAll() {
+		ArrayList<CalibrationVo> list = new ArrayList<CalibrationVo>();
 		SQLiteDatabase db = new DatabaseHelper(mContext).getWritableDatabase();
 		Cursor cursor = db.query(TABLE, null, null, null, null, null, null);
 		while(cursor.moveToNext()) {
-			PhoneVo vo = new PhoneVo();
+			CalibrationVo vo = new CalibrationVo();
 			vo.setId(cursor.getInt(cursor.getColumnIndex(_ID)));
 			vo.setLabel(cursor.getString(cursor.getColumnIndex(LABEL)));
 			list.add(vo);
@@ -37,12 +37,12 @@ public class PhoneDao {
 		return list;
 	}
 	
-	public PhoneVo get(int id) {
+	public CalibrationVo get(int id) {
 		SQLiteDatabase db = new DatabaseHelper(mContext).getWritableDatabase();
 		Cursor cursor = db.query(TABLE, null, _ID+"=?", new String[] {Integer.toString(id)}, null, null, null);
-		PhoneVo vo = null;
+		CalibrationVo vo = null;
 		if (cursor.moveToFirst()) {
-			vo = new PhoneVo();
+			vo = new CalibrationVo();
 			vo.setId(cursor.getInt(cursor.getColumnIndex(_ID)));
 			vo.setLabel(cursor.getString(cursor.getColumnIndex(LABEL)));
 		}
@@ -53,7 +53,7 @@ public class PhoneDao {
 	}
 	
 	
-	public long insert(PhoneVo counterVo) {
+	public long insert(CalibrationVo counterVo) {
 		SQLiteDatabase db = new DatabaseHelper(mContext).getWritableDatabase();
 		ContentValues values = new ContentValues();
 		if (counterVo.getId() > 0) values.put(_ID, counterVo.getId());
@@ -64,7 +64,7 @@ public class PhoneDao {
 		return num;
 	}
 	
-	public int update(PhoneVo counterVo) {
+	public int update(CalibrationVo counterVo) {
 		SQLiteDatabase db = new DatabaseHelper(mContext).getWritableDatabase();
 		ContentValues values = new ContentValues();
 		values.put(_ID, counterVo.getId());
@@ -81,7 +81,7 @@ public class PhoneDao {
 		db.close();
 	}
 	
-	public void delete(PhoneVo counterVo) {
+	public void delete(CalibrationVo counterVo) {
 		delete(counterVo.getId());
 	}
 	

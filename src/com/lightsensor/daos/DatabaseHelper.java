@@ -1,4 +1,4 @@
-package com.lightsensor.dao;
+package com.lightsensor.daos;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -18,8 +18,8 @@ public final class DatabaseHelper extends SQLiteOpenHelper {
 
 	@Override
 	public void onCreate(SQLiteDatabase database) {
-		final String table = "CREATE TABLE " + PhoneDao.TABLE + "("
-				+ PhoneDao._ID + " integer primary key, " + PhoneDao.LABEL
+		final String table = "CREATE TABLE " + CalibrationDao.TABLE + "("
+				+ CalibrationDao._ID + " integer primary key, " + CalibrationDao.LABEL
 				+ " text)";
 		database.execSQL(table);
 		Log.d("KM", "table created");

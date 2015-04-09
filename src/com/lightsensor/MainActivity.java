@@ -16,7 +16,7 @@ import android.widget.TextView;
 
 import com.example.luxsensor.R;
 import com.lightsensor.controller.Controller;
-import com.lightsensor.model.LuxVo;
+import com.lightsensor.model.SensorVo;
 
 public class MainActivity extends Activity implements SensorEventListener,
 		ISensorObservable {
@@ -29,7 +29,7 @@ public class MainActivity extends Activity implements SensorEventListener,
 	private TextView mCurrVal, mAddedVal;
 	private Button mOpen;
 	private TextView mCurrCalibration;
-	LuxVo vo;
+	SensorVo vo;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +49,7 @@ public class MainActivity extends Activity implements SensorEventListener,
 			}
 		});
 	
-		vo = new LuxVo();
+		vo = new SensorVo();
 		
 		mController = Controller.getInstance(getApplicationContext());
 		mController.setModel(vo);
@@ -95,7 +95,7 @@ public class MainActivity extends Activity implements SensorEventListener,
 	}
 
 	@Override
-	public void onValueChanged(LuxVo model) {
+	public void onValueChanged(SensorVo model) {
 		mCurrVal.setText(Float.toString(model.getValue()));
 		mAddedVal.setText(Float.toString(model.getValue() + 3));
 	}

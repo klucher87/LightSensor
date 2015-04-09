@@ -1,7 +1,7 @@
 package com.lightsensor.model;
 
 
-public class PhoneVo {
+public class CalibrationVo {
 	
 	private int id = -1;
 	private String label = "";

@@ -4,18 +4,18 @@ import java.util.ArrayList;
 
 import android.content.Context;
 
-import com.lightsensor.dao.PhoneDao;
-import com.lightsensor.model.LuxVo;
-import com.lightsensor.model.PhoneVo;
+import com.lightsensor.daos.CalibrationDao;
+import com.lightsensor.model.SensorVo;
+import com.lightsensor.model.CalibrationVo;
 
 final public class Controller {
 
 	private static Controller INSTANCE;
 
-	private ArrayList<PhoneVo> mItems = new ArrayList<PhoneVo>();
+	private ArrayList<CalibrationVo> mItems = new ArrayList<CalibrationVo>();
 	private Context mContext;
 	// model do odczytu z sensora
-	private LuxVo mRead;
+	private SensorVo mRead;
 
 	private Controller(Context ctx) {
 		mContext = ctx;
@@ -29,19 +29,19 @@ final public class Controller {
 		return INSTANCE;
 	}
 
-	public LuxVo getModel() {
+	public SensorVo getModel() {
 		return mRead;
 	}
 
-	public void setModel(LuxVo read) {
+	public void setModel(SensorVo read) {
 		mRead = read;
 	}
 
-	public ArrayList<PhoneVo> getItems() {
+	public ArrayList<CalibrationVo> getItems() {
 		return mItems;
 	}
 
-	public void setItems(ArrayList<PhoneVo> items) {
+	public void setItems(ArrayList<CalibrationVo> items) {
 		mItems = items;
 	}
 
@@ -50,18 +50,18 @@ final public class Controller {
 	}
 
 	public void fetchFromDB() {
-		PhoneDao dao = new PhoneDao(mContext);
+		CalibrationDao dao = new CalibrationDao(mContext);
 		while (mItems.size() > 0) {
 			mItems.remove(0);
 		}
-		for (PhoneVo obj : dao.getAll()) {
+		for (CalibrationVo obj : dao.getAll()) {
 			mItems.add(obj);
 		}
 	}
 
 	public void insertNew(String label) {
-		PhoneDao dao = new PhoneDao(mContext);
-		final PhoneVo model = new PhoneVo();
+		CalibrationDao dao = new CalibrationDao(mContext);
+		final CalibrationVo model = new CalibrationVo();
 		model.setLabel(label);
 		if (model.getId() > 0) {
 			int effected = dao.update(model);
@@ -81,7 +81,7 @@ final public class Controller {
 	}
 
 	public CharSequence getSelecteditemLabel() {
-		for (PhoneVo item : mItems) {
+		for (CalibrationVo item : mItems) {
 			if (item.isSelected()) {
 				return item.getLabel();
 			}

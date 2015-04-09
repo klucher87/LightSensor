@@ -14,14 +14,14 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.luxsensor.R;
-import com.lightsensor.model.PhoneVo;
+import com.lightsensor.model.CalibrationVo;
 
-public class ListAdapter extends ArrayAdapter<PhoneVo> implements OnItemClickListener{
+public class ListAdapter extends ArrayAdapter<CalibrationVo> implements OnItemClickListener{
 
 	private LayoutInflater mInflater;
 	private ListView mList;
 	
-	public ListAdapter(Context context, ListView list, ArrayList<PhoneVo> items) {
+	public ListAdapter(Context context, ListView list, ArrayList<CalibrationVo> items) {
 		super(context, R.layout.list_item, items);
 		mInflater = (LayoutInflater) context
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -32,7 +32,7 @@ public class ListAdapter extends ArrayAdapter<PhoneVo> implements OnItemClickLis
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		Holder holder;
-		PhoneVo counter = getItem(position);
+		CalibrationVo counter = getItem(position);
 		if (convertView == null) {
 			convertView = mInflater.inflate(R.layout.list_item, parent, false);
 			holder = new Holder();

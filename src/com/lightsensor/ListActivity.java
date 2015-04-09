@@ -12,8 +12,8 @@ import android.widget.ListView;
 
 import com.example.luxsensor.R;
 import com.lightsensor.controller.Controller;
-import com.lightsensor.dao.PhoneDao;
-import com.lightsensor.model.PhoneVo;
+import com.lightsensor.daos.CalibrationDao;
+import com.lightsensor.model.CalibrationVo;
 
 public class ListActivity extends Activity {
 
