@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">LightSensor</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="lambda">Lambda:</string>
+    <string name="current_val">Bierząca wartość:</string>
+    <string name="avg_val">Średnia wartość:</string>
+    <string name="zero">0</string>
+    <string name="def_lambda_val">500 lambda</string>
+    <string name="content_desc">Porzednio zrobione zdjęcie</string>
+    <string name="execute">Wykonaj!</string>
+    <string name="luminance">Luminancja:</string>
+    
+    
+    <string name="insert_dialog_title">Wpisz nazwę nowej kalibracji:</string>
+    <string name="positive_btn">OK</string>
+    <string name="negative_btn">Cancel</string>
+
+</resources>
