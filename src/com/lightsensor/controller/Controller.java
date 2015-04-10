@@ -3,33 +3,32 @@ package com.lightsensor.controller;
 import java.util.ArrayList;
 
 import android.content.Context;
-import android.os.Handler;
-import android.os.Looper;
 import android.widget.Toast;
 
-import com.example.luxsensor.R;
+import com.lightsensor.R;
 import com.lightsensor.daos.CalibrationDao;
+import com.lightsensor.daos.DatabaseHelper;
 import com.lightsensor.model.CalibrationVo;
 import com.lightsensor.model.SensorVo;
 
 final public class Controller {
 
 	private static Controller INSTANCE;
-	
-	public interface IOnCalibrationUpdate{
+
+	public interface IOnCalibrationUpdate {
 		public void onCalibrationUpdate();
 	}
 
 	private ArrayList<CalibrationVo> mItems = new ArrayList<CalibrationVo>();
 	private ArrayList<IOnCalibrationUpdate> mListeners = new ArrayList<IOnCalibrationUpdate>();
 	private Context mContext;
-	private Handler mHandler;
-	// model do odczytu z sensora
+	// model do odczytu z sensora -> dodac oddzielny kontroller?
 	private SensorVo mRead;
 
 	private Controller(Context ctx) {
 		mContext = ctx;
-		mHandler = new Handler(Looper.getMainLooper());
+		// Create database first time
+		new DatabaseHelper(mContext);
 		fetchFromDB();
 	}
 
@@ -39,12 +38,12 @@ final public class Controller {
 		}
 		return INSTANCE;
 	}
-	
-	public void addlistener(IOnCalibrationUpdate listener){
+
+	public void addlistener(IOnCalibrationUpdate listener) {
 		mListeners.add(listener);
 	}
-	
-	public void removeListener(IOnCalibrationUpdate listener){
+
+	public void removeListener(IOnCalibrationUpdate listener) {
 		mListeners.remove(listener);
 	}
 
@@ -54,6 +53,10 @@ final public class Controller {
 
 	public void setModel(SensorVo read) {
 		mRead = read;
+	}
+	
+	public void onSensorChanged(float f) {
+		mRead.setValue(f);
 	}
 
 	public ArrayList<CalibrationVo> getItems() {
@@ -65,10 +68,88 @@ final public class Controller {
 		notifyListeners();
 	}
 
-	public void onSensorChanged(float f) {
-		mRead.setValue(f);
+	public void insertNewCalibration(final String label) {
+		CalibrationDao dao = new CalibrationDao(mContext);
+		final CalibrationVo model = new CalibrationVo();
+		model.setLabel(label);
+		if (model.getId() > 0) {
+			int effected = dao.update(model);
+			// this would be the case if
+			// item is saved, item is deleted from list, user goes
+			// history back,
+			// old model still have id value.
+			if (effected < 1) {
+				long id = dao.insert(model);
+				model.setId((int) id);
+			}
+		} else {
+			long id = dao.insert(model);
+			model.setId((int) id);
+		}
+		fetchFromDB();
 	}
 
+	public void updateSelectionStates(final CalibrationVo selected) {
+		for (int i = 0; i < mItems.size(); i++) {
+			CalibrationVo item = mItems.get(i);
+			// deselect all others
+			if (item.isSelected() && item.getId() != selected.getId()) {
+				item.setSelected(false);
+				update(item);
+			}
+		}
+		selected.setSelected(!selected.isSelected());
+		update(selected);
+		fetchFromDB();
+	}
+
+	public void deleteSelectedCalibration() {
+		CalibrationDao dao = new CalibrationDao(mContext);
+		CalibrationVo item = getSelecteditem();
+		if (item != null) {
+			dao.delete(item);
+		} else {
+			Toast.makeText(
+					mContext,
+					mContext.getResources().getString(
+							R.string.no_selected_item_info), Toast.LENGTH_SHORT)
+					.show();
+		}
+		fetchFromDB();
+	}
+
+	public CharSequence getSelectedCalibrationName() {
+		CalibrationVo item = getSelecteditem();
+		return item != null ? item.getLabel() : "brak";
+	}
+
+	private CalibrationVo getSelecteditem() {
+		for (CalibrationVo item : mItems) {
+			if (item.isSelected()) {
+				return item;
+			}
+		}
+		return null;
+	}
+	
+	private void update(final CalibrationVo model) {
+		CalibrationDao dao = new CalibrationDao(mContext);
+		if (model.getId() > 0) {
+			int effected = dao.update(model);
+			// this would be the case if
+			// item is saved, item is deleted from list, user goes
+			// history back,
+			// old model still have id value.
+			if (effected < 1) {
+				long id = dao.insert(model);
+				model.setId((int) id);
+			}
+		} else {
+			long id = dao.insert(model);
+			model.setId((int) id);
+		}
+	}
+	
 	private void fetchFromDB() {
 		CalibrationDao dao = new CalibrationDao(mContext);
 		while (mItems.size() > 0) {
@@ -80,77 +161,10 @@ final public class Controller {
 		notifyListeners();
 	}
 
-	private void notifyListeners(){
-		for(IOnCalibrationUpdate listener : mListeners){
+	private void notifyListeners() {
+		for (IOnCalibrationUpdate listener : mListeners) {
 			listener.onCalibrationUpdate();
 		}
-	}
-	
-	public void insertNew(final String label) {
-		mHandler.post(new Runnable() {
-			@Override
-			public void run() {
-				CalibrationDao dao = new CalibrationDao(mContext);
-				final CalibrationVo model = new CalibrationVo();
-				model.setLabel(label);
-				if (model.getId() > 0) {
-					int effected = dao.update(model);
-					// this would be the case if
-					// item is saved, item is deleted from list, user goes
-					// history back,
-					// old model still have id value.
-					if (effected < 1) {
-						long id = dao.insert(model);
-						model.setId((int) id);
-					}
-				} else {
-					long id = dao.insert(model);
-					model.setId((int) id);
-				}
-				// mItems.add(model);
-
-				fetchFromDB();
-			}
-		});
-	}
-
-	public void deleteSelectedItem() {
-		mHandler.post(new Runnable() {
-			@Override
-			public void run() {
-				CalibrationDao dao = new CalibrationDao(mContext);
-				CalibrationVo item = getSelecteditem();
-				// synchronized (item) {
-				if (item != null) {
-					dao.delete(item);
-				} else {
-					Toast.makeText(
-							mContext,
-							mContext.getResources().getString(
-									R.string.no_selected_item_info),
-							Toast.LENGTH_SHORT).show();
-				}
-				fetchFromDB();
-				// }
-			}
-
-		});
-	}
-
-	public CharSequence getSelecteditemLabel() {
-		CalibrationVo item = getSelecteditem();
-		return item != null ? item.getLabel() : "brak";
-	}
-
-	private CalibrationVo getSelecteditem() {
-		// synchronized (mItems) {
-		for (CalibrationVo item : mItems) {
-			if (item.isSelected()) {
-				return item;
-			}
-		}
-		// }
-		return null;
 	}
 
 }

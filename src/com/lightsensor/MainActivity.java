@@ -14,7 +14,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.example.luxsensor.R;
+import com.lightsensor.R;
 import com.lightsensor.controller.Controller;
 import com.lightsensor.model.SensorVo;
 
@@ -84,7 +84,7 @@ public class MainActivity extends Activity implements SensorEventListener,
 		mSensorManager.registerListener(this, mLight,
 				SensorManager.SENSOR_DELAY_NORMAL);
 		vo.addListener(this);
-       	mCurrCalibration.setText(mController.getSelecteditemLabel());		
+       	mCurrCalibration.setText(mController.getSelectedCalibrationName());		
 	}
 
 	@Override

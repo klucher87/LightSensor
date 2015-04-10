@@ -13,7 +13,7 @@ import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.example.luxsensor.R;
+import com.lightsensor.R;
 import com.lightsensor.controller.Controller;
 import com.lightsensor.controller.Controller.IOnCalibrationUpdate;
 import com.lightsensor.model.CalibrationVo;
@@ -24,6 +24,7 @@ public class ListAdapter extends ArrayAdapter<CalibrationVo> implements
 	private LayoutInflater mInflater;
 	private ListView mList;
 	private ArrayList<CalibrationVo> mItems;
+	private Controller mController;
 
 	public ListAdapter(Context context, ListView list,
 			ArrayList<CalibrationVo> items) {
@@ -33,7 +34,8 @@ public class ListAdapter extends ArrayAdapter<CalibrationVo> implements
 		mList = list;
 		mList.setOnItemClickListener(this);
 		mItems = items;
-		Controller.getInstance(getContext()).addlistener(this);
+		mController = Controller.getInstance(getContext());
+		mController.addlistener(this);
 	}
 
 	@Override
@@ -49,10 +51,12 @@ public class ListAdapter extends ArrayAdapter<CalibrationVo> implements
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		Holder holder;
-		CalibrationVo counter = getItem(position);
+		CalibrationVo model = getItem(position);
 		if (convertView == null) {
 			convertView = mInflater.inflate(R.layout.list_item, parent, false);
 			holder = new Holder();
+			holder.model_id = (TextView) convertView
+					.findViewById(R.id.model_id);
 			holder.label = (TextView) convertView.findViewById(R.id.label);
 			holder.checkbox = (CheckBox) convertView
 					.findViewById(R.id.checkbox);
@@ -63,20 +67,16 @@ public class ListAdapter extends ArrayAdapter<CalibrationVo> implements
 
 		int color = ((position % 2) == 0) ? 0xFFF0FFE1 : 0xFFFFFFFF;
 		convertView.setBackgroundColor(color);
-		holder.label.setText(counter.getLabel());
-		holder.checkbox.setChecked(counter.isSelected());
+		holder.model_id.setText(Integer.toString(model.getId()));
+		holder.label.setText(model.getLabel());
+		holder.checkbox.setChecked(model.isSelected());
 		return convertView;
 	}
 
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position,
 			long id) {
-		boolean isChecked = getItem(position).isSelected();
-		for (int i = 0; i < getCount(); i++) {
-			getItem(i).setSelected(false);
-		}
-		getItem(position).setSelected(!isChecked);
-		notifyDataSetChanged();
+		mController.updateSelectionStates(getItem(position));
 	}
 
 	@Override
@@ -85,8 +85,9 @@ public class ListAdapter extends ArrayAdapter<CalibrationVo> implements
 	}
 
 	private class Holder {
+		public TextView model_id;
 		public TextView label;
 		public CheckBox checkbox;
 	}
-	
+
 }

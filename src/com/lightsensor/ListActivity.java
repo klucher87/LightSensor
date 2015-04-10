@@ -10,7 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
-import com.example.luxsensor.R;
+import com.lightsensor.R;
 import com.lightsensor.controller.Controller;
 
 public class ListActivity extends Activity {
@@ -71,7 +71,7 @@ public class ListActivity extends Activity {
 									int which) {
 								EditText txt = (EditText) ((AlertDialog) dialog)
 										.findViewById(R.id.insert_edit_txt);
-								mController.insertNew(txt.getText().toString());
+								mController.insertNewCalibration(txt.getText().toString());
 							}
 						})
 				.setNegativeButton(R.string.negative_btn,
@@ -92,7 +92,7 @@ public class ListActivity extends Activity {
 							@Override
 							public void onClick(DialogInterface dialog,
 									int which) {
-								mController.deleteSelectedItem();
+								mController.deleteSelectedCalibration();
 							}
 						})
 				.setNegativeButton(R.string.negative_btn,
