@@ -14,19 +14,36 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.luxsensor.R;
+import com.lightsensor.controller.Controller;
+import com.lightsensor.controller.Controller.IOnCalibrationUpdate;
 import com.lightsensor.model.CalibrationVo;
 
-public class ListAdapter extends ArrayAdapter<CalibrationVo> implements OnItemClickListener{
+public class ListAdapter extends ArrayAdapter<CalibrationVo> implements
+		OnItemClickListener, IOnCalibrationUpdate {
 
 	private LayoutInflater mInflater;
 	private ListView mList;
-	
-	public ListAdapter(Context context, ListView list, ArrayList<CalibrationVo> items) {
+	private ArrayList<CalibrationVo> mItems;
+
+	public ListAdapter(Context context, ListView list,
+			ArrayList<CalibrationVo> items) {
 		super(context, R.layout.list_item, items);
 		mInflater = (LayoutInflater) context
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		mList = list;
 		mList.setOnItemClickListener(this);
+		mItems = items;
+		Controller.getInstance(getContext()).addlistener(this);
+	}
+
+	@Override
+	public CalibrationVo getItem(int position) {
+		return mItems.get(position);
+	}
+
+	@Override
+	public int getCount() {
+		return mItems.size();
 	}
 
 	@Override
@@ -51,18 +68,25 @@ public class ListAdapter extends ArrayAdapter<CalibrationVo> implements OnItemCl
 		return convertView;
 	}
 
-	private class Holder {
-		public TextView label;
-		public CheckBox checkbox;
-	}
-
 	@Override
-	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+	public void onItemClick(AdapterView<?> parent, View view, int position,
+			long id) {
 		boolean isChecked = getItem(position).isSelected();
-		for(int i = 0; i<getCount(); i++){
+		for (int i = 0; i < getCount(); i++) {
 			getItem(i).setSelected(false);
 		}
 		getItem(position).setSelected(!isChecked);
 		notifyDataSetChanged();
 	}
+
+	@Override
+	public void onCalibrationUpdate() {
+		notifyDataSetChanged();
+	}
+
+	private class Holder {
+		public TextView label;
+		public CheckBox checkbox;
+	}
+	
 }

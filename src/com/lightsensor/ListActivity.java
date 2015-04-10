@@ -12,8 +12,6 @@ import android.widget.ListView;
 
 import com.example.luxsensor.R;
 import com.lightsensor.controller.Controller;
-import com.lightsensor.daos.CalibrationDao;
-import com.lightsensor.model.CalibrationVo;
 
 public class ListActivity extends Activity {
 
@@ -30,36 +28,21 @@ public class ListActivity extends Activity {
 		setContentView(R.layout.list_layout);
 
 		mController = Controller.getInstance(getApplicationContext());
-		
+
 		mInsert = (Button) findViewById(R.id.insert_btn);
 		mInsert.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				new AlertDialog.Builder(ListActivity.this)
-						.setView(
-								getLayoutInflater().inflate(
-										R.layout.insert_dialog_layout, null))
-						.setTitle(R.string.insert_dialog_title)
-						.setPositiveButton(R.string.positive_btn,
-								new DialogInterface.OnClickListener() {
-									@Override
-									public void onClick(DialogInterface dialog,
-											int which) {
-										insertNewCalibration((AlertDialog) dialog);
-									}
-								})
-						.setNegativeButton(R.string.negative_btn,
-								new DialogInterface.OnClickListener() {
-									@Override
-									public void onClick(DialogInterface dialog,
-											int which) {
-										//do nothing
-									}
-								})
-						.show();
+				showInsertDialog();
 			}
 		});
 		mDelete = (Button) findViewById(R.id.delete_btn);
+		mDelete.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				showDeleteDialog();
+			}
+		});
 		mEdit = (Button) findViewById(R.id.edit_btn);
 		mEdit.setOnClickListener(new OnClickListener() {
 			@Override
@@ -73,12 +56,53 @@ public class ListActivity extends Activity {
 		mList.setAdapter(new ListAdapter(getApplicationContext(), mList,
 				mController.getItems()));
 
-
 	}
 
-	private void insertNewCalibration(AlertDialog dialog) {
-		EditText txt = (EditText) dialog.findViewById(R.id.insert_edit_txt);
-		mController.insertNew(txt.getText().toString());
+	private void showInsertDialog() {
+		new AlertDialog.Builder(ListActivity.this)
+				.setView(
+						getLayoutInflater().inflate(
+								R.layout.insert_dialog_layout, null))
+				.setTitle(R.string.insert_dialog_title)
+				.setPositiveButton(R.string.positive_btn,
+						new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+								EditText txt = (EditText) ((AlertDialog) dialog)
+										.findViewById(R.id.insert_edit_txt);
+								mController.insertNew(txt.getText().toString());
+							}
+						})
+				.setNegativeButton(R.string.negative_btn,
+						new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+								// do nothing
+							}
+						}).show();
+	}
+
+	private void showDeleteDialog() {
+		new AlertDialog.Builder(ListActivity.this)
+				.setTitle(R.string.delete_dialog_text)
+				.setPositiveButton(R.string.positive_btn,
+						new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+								mController.deleteSelectedItem();
+							}
+						})
+				.setNegativeButton(R.string.negative_btn,
+						new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+								// do nothing
+							}
+						}).show();
 	}
 
 }

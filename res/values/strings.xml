@@ -13,9 +13,11 @@
     <string name="execute">Wykonaj!</string>
     <string name="luminance">Luminancja:</string>
     
+    <string name="no_selected_item_info">Brak zaznaczonej kalibracji!</string>
     
     <string name="insert_dialog_title">Wpisz nazwę nowej kalibracji:</string>
     <string name="positive_btn">OK</string>
     <string name="negative_btn">Cancel</string>
+    <string name="delete_dialog_text">Czy na pewno usunąć?</string>
 
 </resources>
