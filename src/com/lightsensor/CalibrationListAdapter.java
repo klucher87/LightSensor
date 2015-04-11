@@ -13,12 +13,11 @@ import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.lightsensor.R;
 import com.lightsensor.controller.Controller;
-import com.lightsensor.controller.Controller.IOnCalibrationUpdate;
+import com.lightsensor.controller.IOnCalibrationUpdate;
 import com.lightsensor.model.CalibrationVo;
 
-public class ListAdapter extends ArrayAdapter<CalibrationVo> implements
+public class CalibrationListAdapter extends ArrayAdapter<CalibrationVo> implements
 		OnItemClickListener, IOnCalibrationUpdate {
 
 	private LayoutInflater mInflater;
@@ -26,9 +25,9 @@ public class ListAdapter extends ArrayAdapter<CalibrationVo> implements
 	private ArrayList<CalibrationVo> mItems;
 	private Controller mController;
 
-	public ListAdapter(Context context, ListView list,
+	public CalibrationListAdapter(Context context, ListView list,
 			ArrayList<CalibrationVo> items) {
-		super(context, R.layout.list_item, items);
+		super(context, R.layout.calibration_list_item, items);
 		mInflater = (LayoutInflater) context
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		mList = list;
@@ -53,7 +52,7 @@ public class ListAdapter extends ArrayAdapter<CalibrationVo> implements
 		Holder holder;
 		CalibrationVo model = getItem(position);
 		if (convertView == null) {
-			convertView = mInflater.inflate(R.layout.list_item, parent, false);
+			convertView = mInflater.inflate(R.layout.calibration_list_item, parent, false);
 			holder = new Holder();
 			holder.model_id = (TextView) convertView
 					.findViewById(R.id.model_id);

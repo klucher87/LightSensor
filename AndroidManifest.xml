@@ -24,7 +24,12 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.lightsensor.ListActivity"
+            android:name="com.lightsensor.CalibrationsActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/app_name" >            
+        </activity>
+        <activity
+            android:name="com.lightsensor.PointsActivity"
             android:screenOrientation="portrait"
             android:label="@string/app_name" >            
         </activity>

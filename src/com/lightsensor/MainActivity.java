@@ -34,7 +34,7 @@ public class MainActivity extends Activity implements SensorEventListener,
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.main);
+		setContentView(R.layout.main_layout);
 		mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 		mLight = mSensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
 		
@@ -45,7 +45,7 @@ public class MainActivity extends Activity implements SensorEventListener,
 		mOpen.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				startActivity(new Intent(MainActivity.this, ListActivity.class));
+				startActivity(new Intent(MainActivity.this, CalibrationsActivity.class));
 			}
 		});
 	

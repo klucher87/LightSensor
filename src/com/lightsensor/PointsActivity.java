@@ -10,12 +10,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
-import com.lightsensor.R;
 import com.lightsensor.controller.Controller;
 
-public class ListActivity extends Activity {
-
-	private static final String TAG = "KM";
+public class PointsActivity extends Activity {
 
 	private Controller mController;
 	private Button mInsert, mDelete, mEdit;
@@ -25,7 +22,7 @@ public class ListActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		setContentView(R.layout.list_layout);
+		setContentView(R.layout.points_layout);
 
 		mController = Controller.getInstance(getApplicationContext());
 
@@ -40,29 +37,29 @@ public class ListActivity extends Activity {
 		mDelete.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				showDeleteDialog();
+				//
 			}
 		});
 		mEdit = (Button) findViewById(R.id.edit_btn);
 		mEdit.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-
+				//
 			}
 		});
 
 		mList = (ListView) findViewById(R.id.list_view);
 		mList.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-		mList.setAdapter(new ListAdapter(getApplicationContext(), mList,
-				mController.getItems()));
+//		mList.setAdapter(new CalibrationListAdapter(getApplicationContext(), mList,
+//				mController.getItems()));
 
 	}
 
 	private void showInsertDialog() {
-		new AlertDialog.Builder(ListActivity.this)
+		new AlertDialog.Builder(PointsActivity.this)
 				.setView(
 						getLayoutInflater().inflate(
-								R.layout.insert_dialog_layout, null))
+								R.layout.point_insert_dialog_layout, null))
 				.setTitle(R.string.insert_dialog_title)
 				.setPositiveButton(R.string.positive_btn,
 						new DialogInterface.OnClickListener() {
@@ -71,7 +68,8 @@ public class ListActivity extends Activity {
 									int which) {
 								EditText txt = (EditText) ((AlertDialog) dialog)
 										.findViewById(R.id.insert_edit_txt);
-								mController.insertNewCalibration(txt.getText().toString());
+								mController.insertNewCalibration(txt.getText()
+										.toString());
 							}
 						})
 				.setNegativeButton(R.string.negative_btn,
@@ -83,26 +81,5 @@ public class ListActivity extends Activity {
 							}
 						}).show();
 	}
-
-	private void showDeleteDialog() {
-		new AlertDialog.Builder(ListActivity.this)
-				.setTitle(R.string.delete_dialog_text)
-				.setPositiveButton(R.string.positive_btn,
-						new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
-								mController.deleteSelectedCalibration();
-							}
-						})
-				.setNegativeButton(R.string.negative_btn,
-						new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
-								// do nothing
-							}
-						}).show();
-	}
-
+	
 }

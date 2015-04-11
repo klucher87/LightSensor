@@ -8,28 +8,33 @@ import android.widget.Toast;
 import com.lightsensor.R;
 import com.lightsensor.daos.CalibrationDao;
 import com.lightsensor.daos.DatabaseHelper;
+import com.lightsensor.daos.PointDao;
 import com.lightsensor.model.CalibrationVo;
+import com.lightsensor.model.PointVo;
 import com.lightsensor.model.SensorVo;
 
-final public class Controller {
+/**
+ * Delegowanie do pozostalych dwoch kontrolerow
+ * 
+ * @author kamil
+ *
+ */
+final public class Controller implements ICalibrationController, IPointController{
 
 	private static Controller INSTANCE;
 
-	public interface IOnCalibrationUpdate {
-		public void onCalibrationUpdate();
-	}
-
-	private ArrayList<CalibrationVo> mItems = new ArrayList<CalibrationVo>();
-	private ArrayList<IOnCalibrationUpdate> mListeners = new ArrayList<IOnCalibrationUpdate>();
+	private ArrayList<PointVo> mPoints = new ArrayList<PointVo>();
 	private Context mContext;
+	private CalibrationController mCalibrationController;
 	// model do odczytu z sensora -> dodac oddzielny kontroller?
 	private SensorVo mRead;
 
 	private Controller(Context ctx) {
 		mContext = ctx;
+		mCalibrationController = new CalibrationController(ctx);
 		// Create database first time
 		new DatabaseHelper(mContext);
-		fetchFromDB();
+		mCalibrationController.fetchFromDB();
 	}
 
 	public static Controller getInstance(Context ctx) {
@@ -40,11 +45,11 @@ final public class Controller {
 	}
 
 	public void addlistener(IOnCalibrationUpdate listener) {
-		mListeners.add(listener);
+		mCalibrationController.addlistener(listener);
 	}
 
 	public void removeListener(IOnCalibrationUpdate listener) {
-		mListeners.remove(listener);
+		mCalibrationController.removeListener(listener);
 	}
 
 	public SensorVo getModel() {
@@ -59,19 +64,25 @@ final public class Controller {
 		mRead.setValue(f);
 	}
 
-	public ArrayList<CalibrationVo> getItems() {
-		return mItems;
+	public ArrayList<CalibrationVo> getCalibrations() {
+		return mCalibrationController.getItems();
 	}
 
 	public void setItems(ArrayList<CalibrationVo> items) {
-		mItems = items;
-		notifyListeners();
+		mCalibrationController.setItems(items);
 	}
 
 	public void insertNewCalibration(final String label) {
-		CalibrationDao dao = new CalibrationDao(mContext);
-		final CalibrationVo model = new CalibrationVo();
-		model.setLabel(label);
+		mCalibrationController.insertNewCalibration(label);
+	}
+	
+	public void insertNewPoint(int _id, float before, float after, int calibration_id) {
+		PointDao dao = new PointDao(mContext);
+		final PointVo model = new PointVo();
+		model.setId(_id);
+		model.setBeforeCalibration(before);
+		model.setAfterCalibration(after);
+		model.setCalibrationId(calibration_id);
 		if (model.getId() > 0) {
 			int effected = dao.update(model);
 			// this would be the case if
@@ -86,85 +97,31 @@ final public class Controller {
 			long id = dao.insert(model);
 			model.setId((int) id);
 		}
-		fetchFromDB();
+		
+		//move to external method
+//		PointDao dao = new PointDao(mContext);
+		while (mPoints.size() > 0) {
+			mPoints.remove(0);
+		}
+		for (PointVo obj : dao.getAll()) {
+			mPoints.add(obj);
+		}
 	}
 
 	public void updateSelectionStates(final CalibrationVo selected) {
-		for (int i = 0; i < mItems.size(); i++) {
-			CalibrationVo item = mItems.get(i);
-			// deselect all others
-			if (item.isSelected() && item.getId() != selected.getId()) {
-				item.setSelected(false);
-				update(item);
-			}
-		}
-		selected.setSelected(!selected.isSelected());
-		update(selected);
-		fetchFromDB();
+		mCalibrationController.updateSelectionStates(selected);
 	}
 
 	public void deleteSelectedCalibration() {
-		CalibrationDao dao = new CalibrationDao(mContext);
-		CalibrationVo item = getSelecteditem();
-		if (item != null) {
-			dao.delete(item);
-		} else {
-			Toast.makeText(
-					mContext,
-					mContext.getResources().getString(
-							R.string.no_selected_item_info), Toast.LENGTH_SHORT)
-					.show();
-		}
-		fetchFromDB();
+		mCalibrationController.deleteSelectedCalibration();
 	}
 
 	public CharSequence getSelectedCalibrationName() {
-		CalibrationVo item = getSelecteditem();
-		return item != null ? item.getLabel() : "brak";
+		return mCalibrationController.getSelectedCalibrationName();
 	}
 
-	private CalibrationVo getSelecteditem() {
-		for (CalibrationVo item : mItems) {
-			if (item.isSelected()) {
-				return item;
-			}
-		}
-		return null;
+	public CalibrationVo getSelectedCalibration() {
+		return mCalibrationController.getSelecteditem();
 	}
 	
-	private void update(final CalibrationVo model) {
-		CalibrationDao dao = new CalibrationDao(mContext);
-		if (model.getId() > 0) {
-			int effected = dao.update(model);
-			// this would be the case if
-			// item is saved, item is deleted from list, user goes
-			// history back,
-			// old model still have id value.
-			if (effected < 1) {
-				long id = dao.insert(model);
-				model.setId((int) id);
-			}
-		} else {
-			long id = dao.insert(model);
-			model.setId((int) id);
-		}
-	}
-	
-	private void fetchFromDB() {
-		CalibrationDao dao = new CalibrationDao(mContext);
-		while (mItems.size() > 0) {
-			mItems.remove(0);
-		}
-		for (CalibrationVo obj : dao.getAll()) {
-			mItems.add(obj);
-		}
-		notifyListeners();
-	}
-
-	private void notifyListeners() {
-		for (IOnCalibrationUpdate listener : mListeners) {
-			listener.onCalibrationUpdate();
-		}
-	}
-
 }
