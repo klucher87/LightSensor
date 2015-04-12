@@ -2,6 +2,8 @@ package com.lightsensor.model;
 
 import java.util.ArrayList;
 
+import android.util.Log;
+
 import com.lightsensor.ISensorObservable;
 
 public class SensorVo {
@@ -29,6 +31,7 @@ public class SensorVo {
 	
 	private void notifyListeners(){
 		for(ISensorObservable listener : mListeners){
+			Log.e("KM", "notify "+mListeners.size());
 			listener.onValueChanged(this);
 		}
 	}

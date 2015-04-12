@@ -62,7 +62,7 @@ public class CalibrationsActivity extends Activity {
 				.setView(
 						getLayoutInflater().inflate(
 								R.layout.calibration_insert_dialog_layout, null))
-				.setTitle(R.string.insert_dialog_title)
+				.setTitle(R.string.insert_calibration_dialog_title)
 				.setPositiveButton(R.string.positive_btn,
 						new DialogInterface.OnClickListener() {
 							@Override

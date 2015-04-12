@@ -30,14 +30,27 @@ public class PointDao {
 		while (cursor.moveToNext()) {
 			PointVo vo = new PointVo();
 			vo.setId(cursor.getInt(cursor.getColumnIndex(_ID)));
-			vo.setBeforeCalibration(cursor.getFloat(cursor.getColumnIndex(BEFORE_CALIBRATION)));
-			vo.setAfterCalibration(cursor.getFloat(cursor.getColumnIndex(AFTER_CALIBRATION)));
-			vo.setCalibrationId(cursor.getInt(cursor.getColumnIndex(CALIBRATION_ID)));
+			vo.setBeforeCalibration(cursor.getFloat(cursor
+					.getColumnIndex(BEFORE_CALIBRATION)));
+			vo.setAfterCalibration(cursor.getFloat(cursor
+					.getColumnIndex(AFTER_CALIBRATION)));
+			vo.setCalibrationId(cursor.getInt(cursor
+					.getColumnIndex(CALIBRATION_ID)));
 			list.add(vo);
 		}
 
 		cursor.close();
 		db.close();
+		return list;
+	}
+
+	public ArrayList<PointVo> getAllWithCalibrationId(int calibration_id) {
+		ArrayList<PointVo> list = new ArrayList<PointVo>();
+		for (PointVo point : getAll()) {
+			if (point.getCalibrationId() == calibration_id) {
+				list.add(point);
+			}
+		}
 		return list;
 	}
 
@@ -49,9 +62,12 @@ public class PointDao {
 		if (cursor.moveToFirst()) {
 			vo = new PointVo();
 			vo.setId(cursor.getInt(cursor.getColumnIndex(_ID)));
-			vo.setBeforeCalibration(cursor.getFloat(cursor.getColumnIndex(BEFORE_CALIBRATION)));
-			vo.setAfterCalibration(cursor.getFloat(cursor.getColumnIndex(AFTER_CALIBRATION)));
-			vo.setCalibrationId(cursor.getInt(cursor.getColumnIndex(CALIBRATION_ID)));
+			vo.setBeforeCalibration(cursor.getFloat(cursor
+					.getColumnIndex(BEFORE_CALIBRATION)));
+			vo.setAfterCalibration(cursor.getFloat(cursor
+					.getColumnIndex(AFTER_CALIBRATION)));
+			vo.setCalibrationId(cursor.getInt(cursor
+					.getColumnIndex(CALIBRATION_ID)));
 		}
 
 		cursor.close();
@@ -67,7 +83,7 @@ public class PointDao {
 		values.put(BEFORE_CALIBRATION, model.getBeforeCalibration());
 		values.put(AFTER_CALIBRATION, model.getAfterCalibration());
 		values.put(CALIBRATION_ID, model.getCalibrationId());
-		
+
 		long num = db.insert(TABLE, null, values);
 		db.close();
 		return num;
@@ -80,7 +96,7 @@ public class PointDao {
 		values.put(BEFORE_CALIBRATION, model.getBeforeCalibration());
 		values.put(AFTER_CALIBRATION, model.getAfterCalibration());
 		values.put(CALIBRATION_ID, model.getCalibrationId());
-		
+
 		int num = db.update(TABLE, values, _ID + "=?",
 				new String[] { Integer.toString(model.getId()) });
 		db.close();

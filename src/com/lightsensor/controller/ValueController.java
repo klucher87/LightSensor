@@ -1,28 +1,27 @@
 package com.lightsensor.controller;
 
-import com.lightsensor.model.SensorVo;
-
 import android.content.Context;
+
+import com.lightsensor.model.SensorVo;
 
 public class ValueController implements IValueController{
 
 	private Context mContext;
-	private SensorVo mRead;
+	private SensorVo mSensorVo;
 	
 	public ValueController(Context ctx) {
 		mContext = ctx;
+		mSensorVo = new SensorVo();
 	}
 	
 	public SensorVo getModel() {
-		return mRead;
-	}
-
-	public void setModel(SensorVo read) {
-		mRead = read;
+		return mSensorVo;
 	}
 	
 	public void onSensorChanged(float f) {
-		mRead.setValue(f);
+		mSensorVo.setValue(f);
 	}
+	
+	
 
 }

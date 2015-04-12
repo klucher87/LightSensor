@@ -3,6 +3,7 @@ package com.lightsensor.controller;
 import java.util.ArrayList;
 
 import com.lightsensor.daos.PointDao;
+import com.lightsensor.model.CalibrationVo;
 import com.lightsensor.model.PointVo;
 
 import android.content.Context;
@@ -69,6 +70,23 @@ public class PointController implements IPointController {
 		}
 		fetchFromDB();
 	}
+
+	public void deletePointsConnectedWith(CalibrationVo calibrationVo) {
+		if (calibrationVo != null) {
+			PointDao dao = new PointDao(mContext);
+			for (PointVo point : dao.getAllWithCalibrationId(calibrationVo
+					.getId())) {
+				if (point != null) {
+					dao.delete(point);
+				}
+			}
+			fetchFromDB();
+		}
+	}
+
+	// public ArrayList<PointVo> getAllWithCalibrationId(int calibration_id) {
+	// return null;
+	// }
 
 	private void notifyListeners() {
 		for (IOnPointsUpdate listener : mListeners) {

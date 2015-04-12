@@ -14,7 +14,6 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.lightsensor.R;
 import com.lightsensor.controller.Controller;
 import com.lightsensor.model.SensorVo;
 
@@ -29,7 +28,6 @@ public class MainActivity extends Activity implements SensorEventListener,
 	private TextView mCurrVal, mAddedVal;
 	private Button mOpen;
 	private TextView mCurrCalibration;
-	SensorVo vo;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -47,13 +45,8 @@ public class MainActivity extends Activity implements SensorEventListener,
 			public void onClick(View v) {
 				startActivity(new Intent(MainActivity.this, CalibrationsActivity.class));
 			}
-		});
-	
-		vo = new SensorVo();
-		
+		});		
 		mController = Controller.getInstance(getApplicationContext());
-		mController.setModel(vo);
-		
 	}
 	
 	@Override
@@ -83,15 +76,15 @@ public class MainActivity extends Activity implements SensorEventListener,
 		super.onResume();
 		mSensorManager.registerListener(this, mLight,
 				SensorManager.SENSOR_DELAY_NORMAL);
-		vo.addListener(this);
+		mController.getModel().addListener(this);
        	mCurrCalibration.setText(mController.getSelectedCalibrationName());		
 	}
 
 	@Override
-	protected void onPause() {
-		super.onPause();
+	protected void onDestroy() {
+		super.onDestroy();
 		mSensorManager.unregisterListener(this);
-		vo.removeListener(this);
+		mController.getModel().removeListener(this);
 	}
 
 	@Override

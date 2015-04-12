@@ -9,19 +9,19 @@
         android:id="@+id/insert_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/insert" />
+        android:text="@string/insert_point" />
 
     <Button
         android:id="@+id/delete_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/delete" />
+        android:text="@string/delete_point" />
 
     <Button
         android:id="@+id/edit_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/edit" />
+        android:text="@string/edit_point" />
 
     <ListView
         android:id="@+id/list_view"

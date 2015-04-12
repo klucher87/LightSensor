@@ -58,10 +58,10 @@ final public class Controller implements ICalibrationController, IPointControlle
 		return mValueController.getModel();
 	}
 
-	public void setModel(SensorVo read) {
-		mValueController.setModel(read);
-	}
-	
+//	public void setModel(SensorVo read) {
+//		mValueController.setModel(read);
+//	}
+//	
 	public void onSensorChanged(float f) {
 		mValueController.onSensorChanged(f);
 	}
@@ -83,6 +83,8 @@ final public class Controller implements ICalibrationController, IPointControlle
 	}
 
 	public void deleteSelectedCalibration() {
+		//usuwa rowniez punkty zwiazane z kalibracja (o tym samym id)
+		mPointController.deletePointsConnectedWith(mCalibrationController.getSelecteditem());
 		mCalibrationController.deleteSelectedCalibration();
 	}
 
