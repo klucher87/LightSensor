@@ -14,27 +14,29 @@ import com.lightsensor.model.PointVo;
 import com.lightsensor.model.SensorVo;
 
 /**
- * Delegowanie do pozostalych dwoch kontrolerow
+ * Delegowanie zadan do pozostalych kontrolerow. Warstwa posredniczaca miedzy kontrolerami.
  * 
  * @author kamil
  *
  */
-final public class Controller implements ICalibrationController, IPointController{
+final public class Controller implements ICalibrationController, IPointController, IValueController{
 
 	private static Controller INSTANCE;
 
-	private ArrayList<PointVo> mPoints = new ArrayList<PointVo>();
 	private Context mContext;
 	private CalibrationController mCalibrationController;
-	// model do odczytu z sensora -> dodac oddzielny kontroller?
-	private SensorVo mRead;
+	private PointController mPointController;
+	private ValueController mValueController;
 
 	private Controller(Context ctx) {
 		mContext = ctx;
 		mCalibrationController = new CalibrationController(ctx);
+		mPointController = new PointController(ctx);
+		mValueController = new ValueController(ctx);
 		// Create database first time
 		new DatabaseHelper(mContext);
 		mCalibrationController.fetchFromDB();
+		mPointController.fetchFromDB();
 	}
 
 	public static Controller getInstance(Context ctx) {
@@ -44,24 +46,24 @@ final public class Controller implements ICalibrationController, IPointControlle
 		return INSTANCE;
 	}
 
-	public void addlistener(IOnCalibrationUpdate listener) {
+	public void addCalibrationListener(IOnCalibrationUpdate listener) {
 		mCalibrationController.addlistener(listener);
 	}
 
-	public void removeListener(IOnCalibrationUpdate listener) {
+	public void removeCalibrationListener(IOnCalibrationUpdate listener) {
 		mCalibrationController.removeListener(listener);
 	}
 
 	public SensorVo getModel() {
-		return mRead;
+		return mValueController.getModel();
 	}
 
 	public void setModel(SensorVo read) {
-		mRead = read;
+		mValueController.setModel(read);
 	}
 	
 	public void onSensorChanged(float f) {
-		mRead.setValue(f);
+		mValueController.onSensorChanged(f);
 	}
 
 	public ArrayList<CalibrationVo> getCalibrations() {
@@ -76,38 +78,6 @@ final public class Controller implements ICalibrationController, IPointControlle
 		mCalibrationController.insertNewCalibration(label);
 	}
 	
-	public void insertNewPoint(int _id, float before, float after, int calibration_id) {
-		PointDao dao = new PointDao(mContext);
-		final PointVo model = new PointVo();
-		model.setId(_id);
-		model.setBeforeCalibration(before);
-		model.setAfterCalibration(after);
-		model.setCalibrationId(calibration_id);
-		if (model.getId() > 0) {
-			int effected = dao.update(model);
-			// this would be the case if
-			// item is saved, item is deleted from list, user goes
-			// history back,
-			// old model still have id value.
-			if (effected < 1) {
-				long id = dao.insert(model);
-				model.setId((int) id);
-			}
-		} else {
-			long id = dao.insert(model);
-			model.setId((int) id);
-		}
-		
-		//move to external method
-//		PointDao dao = new PointDao(mContext);
-		while (mPoints.size() > 0) {
-			mPoints.remove(0);
-		}
-		for (PointVo obj : dao.getAll()) {
-			mPoints.add(obj);
-		}
-	}
-
 	public void updateSelectionStates(final CalibrationVo selected) {
 		mCalibrationController.updateSelectionStates(selected);
 	}
@@ -122,6 +92,22 @@ final public class Controller implements ICalibrationController, IPointControlle
 
 	public CalibrationVo getSelectedCalibration() {
 		return mCalibrationController.getSelecteditem();
+	}
+	
+	public void addPointListener(IOnPointsUpdate listener){
+		mPointController.addListener(listener);
+	}
+	
+	public void removePointListener(IOnPointsUpdate listener){
+		mPointController.removeListener(listener);
+	}
+	
+	public ArrayList<PointVo> getPoints(){
+		return mPointController.getPoints();
+	}
+	
+	public void insertNewPoint(float before, float after){
+		mPointController.insertNewPoint(before, after, mCalibrationController.getSelecteditem().getId());
 	}
 	
 }

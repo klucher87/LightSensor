@@ -34,7 +34,7 @@ public class CalibrationListAdapter extends ArrayAdapter<CalibrationVo> implemen
 		mList.setOnItemClickListener(this);
 		mItems = items;
 		mController = Controller.getInstance(getContext());
-		mController.addlistener(this);
+		mController.addCalibrationListener(this);
 	}
 
 	@Override

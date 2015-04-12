@@ -50,8 +50,7 @@ public class PointsActivity extends Activity {
 
 		mList = (ListView) findViewById(R.id.list_view);
 		mList.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-//		mList.setAdapter(new CalibrationListAdapter(getApplicationContext(), mList,
-//				mController.getItems()));
+		mList.setAdapter(new PointListAdapter(getApplicationContext(), mList, mController.getPoints()));
 
 	}
 
@@ -64,12 +63,14 @@ public class PointsActivity extends Activity {
 				.setPositiveButton(R.string.positive_btn,
 						new DialogInterface.OnClickListener() {
 							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
-								EditText txt = (EditText) ((AlertDialog) dialog)
-										.findViewById(R.id.insert_edit_txt);
-								mController.insertNewCalibration(txt.getText()
-										.toString());
+							public void onClick(DialogInterface dialog, int which) {
+								EditText beforetxt = (EditText) ((AlertDialog) dialog).findViewById(R.id.insert_point_before);
+								EditText aftertxt = (EditText) ((AlertDialog) dialog).findViewById(R.id.insert_point_after);
+								
+								float before = Float.valueOf(beforetxt.getText().toString());
+								float after = Float.valueOf(aftertxt.getText().toString());
+
+								mController.insertNewPoint(before, after);
 							}
 						})
 				.setNegativeButton(R.string.negative_btn,

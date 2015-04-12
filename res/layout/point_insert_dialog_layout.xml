@@ -7,18 +7,20 @@
         android:id="@+id/insert_point_before"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="text" />
+        android:inputType="numberDecimal" />
     
     <EditText
         android:id="@+id/insert_point_after"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="text" />
-    
+        android:layout_below="@id/insert_point_before"
+        android:inputType="numberDecimal" />
+<!--     
     <EditText
         android:id="@+id/insert_point_id"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="text" />
-
+        android:layout_below="@id/insert_point_after"
+        android:inputType="number" />
+ -->
 </RelativeLayout>

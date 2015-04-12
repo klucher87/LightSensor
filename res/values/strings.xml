@@ -20,4 +20,8 @@
     <string name="negative_btn">Cancel</string>
     <string name="delete_dialog_text">Czy na pewno usunąć?</string>
 
+    <string name="insert">Dodaj</string>
+    <string name="delete">Usuń</string>
+    <string name="edit">Edytuj</string>
+    
 </resources>

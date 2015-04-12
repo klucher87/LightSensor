@@ -19,8 +19,8 @@ public final class DatabaseHelper extends SQLiteOpenHelper {
 	private static final String CREATE_TABLE_POINT = "CREATE TABLE "
 			+ PointDao.TABLE + "(" + PointDao._ID + " integer primary key, "
 			+ PointDao.BEFORE_CALIBRATION + " real, "
-			+ PointDao.AFTER_CALIBRATION + " real" + PointDao.CALIBRATION_ID
-			+ "int)";
+			+ PointDao.AFTER_CALIBRATION + " real, " + PointDao.CALIBRATION_ID
+			+ " int)";
 
 	public DatabaseHelper(Context ctx) {
 		super(ctx, DATABASE_NAME, null, DATABASE_VERSION);
