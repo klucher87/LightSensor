@@ -69,14 +69,15 @@ public class PointListAdapter extends ArrayAdapter<PointVo> implements
 		holder.before.setText(Float.toString(model.getBeforeCalibration()));
 		holder.after.setText(Float.toString(model.getAfterCalibration()));
 		holder.calibration_id.setText(Integer.toString(model.getCalibrationId()));
-//		holder.checkbox.setChecked(model.);
+		holder.checkbox.setChecked(model.isSelected());
 		return convertView;
 	}
 
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position,
 			long id) {
-//		mController.updateSelectionStates(getItem(position));
+		mController.updateSelectionStates(getItem(position));
+		notifyDataSetChanged();
 	}
 
 	@Override

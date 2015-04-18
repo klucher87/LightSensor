@@ -18,7 +18,7 @@ import com.lightsensor.controller.Controller;
 import com.lightsensor.model.SensorVo;
 
 public class MainActivity extends Activity implements SensorEventListener,
-		ISensorObservable {
+		IOnSensorChange {
 
 	private static final String TAG = "KM";
 
@@ -35,7 +35,7 @@ public class MainActivity extends Activity implements SensorEventListener,
 		setContentView(R.layout.main_layout);
 		mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 		mLight = mSensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
-		
+
 		mCurrVal = (TextView) findViewById(R.id.txt_curr);
 		mAddedVal = (TextView) findViewById(R.id.txt_curr_2);
 		mCurrCalibration = (TextView) findViewById(R.id.calibrate_txt);
@@ -43,12 +43,16 @@ public class MainActivity extends Activity implements SensorEventListener,
 		mOpen.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				startActivity(new Intent(MainActivity.this, CalibrationsActivity.class));
+				startActivity(new Intent(MainActivity.this,
+						CalibrationsActivity.class));
 			}
-		});		
+		});
 		mController = Controller.getInstance(getApplicationContext());
+		mSensorManager.registerListener(this, mLight,
+				SensorManager.SENSOR_DELAY_NORMAL);
+		mController.getModel().addListener(this);
 	}
-	
+
 	@Override
 	public void onAccuracyChanged(Sensor arg0, int arg1) {
 		switch (arg1) {
@@ -74,10 +78,7 @@ public class MainActivity extends Activity implements SensorEventListener,
 	@Override
 	protected void onResume() {
 		super.onResume();
-		mSensorManager.registerListener(this, mLight,
-				SensorManager.SENSOR_DELAY_NORMAL);
-		mController.getModel().addListener(this);
-       	mCurrCalibration.setText(mController.getSelectedCalibrationName());		
+		mCurrCalibration.setText(mController.getSelectedCalibrationName());
 	}
 
 	@Override

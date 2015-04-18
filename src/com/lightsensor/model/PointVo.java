@@ -7,6 +7,7 @@ public class PointVo {
 	private int mCalibrationId = -1;
 	private float mBeforeCalibration = -1f;
 	private float mAfterCalibration = -1f;
+	private boolean mIsSelected = false;
 	
 	public int getId() {
 		return mId;
@@ -37,6 +38,14 @@ public class PointVo {
 	
 	public void setAfterCalibration(float after_calibration) {
 		mAfterCalibration = after_calibration;
+	}
+	
+	public boolean isSelected() {
+		return mIsSelected;
+	}
+	
+	public void setSelected(boolean isChecked) {
+		mIsSelected = isChecked;
 	}
 	
 }

@@ -9,7 +9,7 @@ import com.lightsensor.R;
 import com.lightsensor.daos.CalibrationDao;
 import com.lightsensor.model.CalibrationVo;
 
-final public class CalibrationController implements ICalibrationController{
+final class CalibrationController implements ICalibrationController{
 
 	private ArrayList<CalibrationVo> mItems;
 	private ArrayList<IOnCalibrationUpdate> mListeners;
@@ -21,44 +21,34 @@ final public class CalibrationController implements ICalibrationController{
 		mContext = ctx;
 	}
 
-	public void addlistener(IOnCalibrationUpdate listener) {
+	@Override
+	public void addCalibrationListener(IOnCalibrationUpdate listener) {
 		mListeners.add(listener);
 	}
 
-	public void removeListener(IOnCalibrationUpdate listener) {
+	@Override
+	public void removeCalibrationListener(IOnCalibrationUpdate listener) {
 		mListeners.remove(listener);
 	}
 
-	public ArrayList<CalibrationVo> getItems() {
+	@Override
+	public ArrayList<CalibrationVo> getCalibrations() {
 		return mItems;
 	}
 
+	@Override
 	public void setItems(ArrayList<CalibrationVo> items) {
 		mItems = items;
 		notifyListeners();
 	}
 
-	public void fetchFromDB() {
-		CalibrationDao dao = new CalibrationDao(mContext);
-		while (mItems.size() > 0) {
-			mItems.remove(0);
-		}
-		for (CalibrationVo obj : dao.getAll()) {
-			mItems.add(obj);
-		}
-		notifyListeners();
-	}
-	
+	@Override
 	public void insertNewCalibration(final String label) {
 		CalibrationDao dao = new CalibrationDao(mContext);
 		final CalibrationVo model = new CalibrationVo();
 		model.setLabel(label);
 		if (model.getId() > 0) {
 			int effected = dao.update(model);
-			// this would be the case if
-			// item is saved, item is deleted from list, user goes
-			// history back,
-			// old model still have id value.
 			if (effected < 1) {
 				long id = dao.insert(model);
 				model.setId((int) id);
@@ -70,6 +60,7 @@ final public class CalibrationController implements ICalibrationController{
 		fetchFromDB();
 	}
 
+	@Override
 	public void updateSelectionStates(final CalibrationVo selected) {
 		for (int i = 0; i < mItems.size(); i++) {
 			CalibrationVo item = mItems.get(i);
@@ -84,27 +75,30 @@ final public class CalibrationController implements ICalibrationController{
 		fetchFromDB();
 	}
 
+	@Override
 	public void deleteSelectedCalibration() {
 		CalibrationDao dao = new CalibrationDao(mContext);
-		CalibrationVo item = getSelecteditem();
+		CalibrationVo item = getSelectedCalibration();
 		if (item != null) {
 			dao.delete(item);
 		} else {
 			Toast.makeText(
 					mContext,
 					mContext.getResources().getString(
-							R.string.no_selected_item_info), Toast.LENGTH_SHORT)
+							R.string.no_selected_point_info), Toast.LENGTH_SHORT)
 					.show();
 		}
 		fetchFromDB();
 	}
 
+	@Override
 	public CharSequence getSelectedCalibrationName() {
-		CalibrationVo item = getSelecteditem();
+		CalibrationVo item = getSelectedCalibration();
 		return item != null ? item.getLabel() : "brak";
 	}
 
-	public CalibrationVo getSelecteditem() {
+	@Override
+	public CalibrationVo getSelectedCalibration() {
 		for (CalibrationVo item : mItems) {
 			if (item.isSelected()) {
 				return item;
@@ -113,14 +107,21 @@ final public class CalibrationController implements ICalibrationController{
 		return null;
 	}
 	
+	public void fetchFromDB() {
+		CalibrationDao dao = new CalibrationDao(mContext);
+		while (mItems.size() > 0) {
+			mItems.remove(0);
+		}
+		for (CalibrationVo obj : dao.getAll()) {
+			mItems.add(obj);
+		}
+		notifyListeners();
+	}
+	
 	private void update(final CalibrationVo model) {
 		CalibrationDao dao = new CalibrationDao(mContext);
 		if (model.getId() > 0) {
 			int effected = dao.update(model);
-			// this would be the case if
-			// item is saved, item is deleted from list, user goes
-			// history back,
-			// old model still have id value.
 			if (effected < 1) {
 				long id = dao.insert(model);
 				model.setId((int) id);

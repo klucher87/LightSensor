@@ -4,11 +4,11 @@ import java.util.ArrayList;
 
 import android.util.Log;
 
-import com.lightsensor.ISensorObservable;
+import com.lightsensor.IOnSensorChange;
 
 public class SensorVo {
 	
-	private final ArrayList<ISensorObservable> mListeners = new ArrayList<ISensorObservable>();
+	private final ArrayList<IOnSensorChange> mListeners = new ArrayList<IOnSensorChange>();
 	
 	private float mValue;
 	
@@ -21,17 +21,17 @@ public class SensorVo {
 		notifyListeners();
 	}
 	
-	public void addListener(ISensorObservable listener){
+	public void addListener(IOnSensorChange listener){
 		mListeners.add(listener);
 	}
 	
-	public void removeListener(ISensorObservable listener){
+	public void removeListener(IOnSensorChange listener){
 		mListeners.remove(listener);
 	}
 	
 	private void notifyListeners(){
-		for(ISensorObservable listener : mListeners){
-			Log.e("KM", "notify "+mListeners.size());
+		for(IOnSensorChange listener : mListeners){
+//			Log.e("KM", "notify "+mListeners.size());
 			listener.onValueChanged(this);
 		}
 	}

@@ -14,11 +14,12 @@
     <string name="luminance">Luminancja:</string>
     
     <string name="no_selected_item_info">Brak zaznaczonej kalibracji!</string>
-    
+    <string name="no_selected_point_info">Brak zaznaczonego punktu!</string>
     <string name="insert_calibration_dialog_title">Wpisz nazwę nowej kalibracji:</string>
     <string name="insert_point_dialog_title">Wprowadź nowy punkt:</string>
+    <string name="edit_point_dialog_title">Edytuj punkt:</string>
     <string name="positive_btn">OK</string>
-    <string name="negative_btn">Cancel</string>
+    <string name="negative_btn">Anuluj</string>
     <string name="delete_dialog_text">Czy na pewno usunąć?</string>
 
     <string name="insert_calibration">Dodaj kalibrację</string>
