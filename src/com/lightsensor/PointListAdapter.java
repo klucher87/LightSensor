@@ -1,6 +1,7 @@
 package com.lightsensor;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -15,6 +16,7 @@ import android.widget.TextView;
 
 import com.lightsensor.controller.Controller;
 import com.lightsensor.controller.IOnPointsUpdate;
+import com.lightsensor.model.CalibrationVo;
 import com.lightsensor.model.PointVo;
 
 public class PointListAdapter extends ArrayAdapter<PointVo> implements
@@ -22,7 +24,7 @@ public class PointListAdapter extends ArrayAdapter<PointVo> implements
 
 	private LayoutInflater mInflater;
 	private ListView mList;
-	private ArrayList<PointVo> mItems;
+	private ArrayList<PointVo> mAllItems, mItems;
 	private Controller mController;
 
 	public PointListAdapter(Context context, ListView list,
@@ -31,8 +33,10 @@ public class PointListAdapter extends ArrayAdapter<PointVo> implements
 		mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		mList = list;
 		mList.setOnItemClickListener(this);
-		mItems = arrayList;
+		mAllItems = arrayList;
+		mItems = new ArrayList<PointVo>();
 		mController = Controller.getInstance(getContext());
+		updateList();
 		mController.addPointListener(this);
 	}
 
@@ -53,10 +57,10 @@ public class PointListAdapter extends ArrayAdapter<PointVo> implements
 		if (convertView == null) {
 			convertView = mInflater.inflate(R.layout.point_list_item, parent, false);
 			holder = new Holder();
-			holder.point_id = (TextView) convertView.findViewById(R.id.point_id);
+//			holder.point_id = (TextView) convertView.findViewById(R.id.point_id);
 			holder.before = (TextView) convertView.findViewById(R.id.before);
 			holder.after =  (TextView) convertView.findViewById(R.id.after);
-			holder.calibration_id = (TextView) convertView.findViewById(R.id.calibration_id);
+//			holder.calibration_id = (TextView) convertView.findViewById(R.id.calibration_id);
 			holder.checkbox = (CheckBox) convertView.findViewById(R.id.checkbox);
 			convertView.setTag(holder);
 		} else {
@@ -65,10 +69,10 @@ public class PointListAdapter extends ArrayAdapter<PointVo> implements
 
 		int color = ((position % 2) == 0) ? 0xFFF0FFE1 : 0xFFFFFFFF;
 		convertView.setBackgroundColor(color);
-		holder.point_id.setText(Integer.toString(model.getId()));
+//		holder.point_id.setText(Integer.toString(model.getId()));
 		holder.before.setText(Float.toString(model.getBeforeCalibration()));
 		holder.after.setText(Float.toString(model.getAfterCalibration()));
-		holder.calibration_id.setText(Integer.toString(model.getCalibrationId()));
+//		holder.calibration_id.setText(Integer.toString(model.getCalibrationId()));
 		holder.checkbox.setChecked(model.isSelected());
 		return convertView;
 	}
@@ -82,14 +86,28 @@ public class PointListAdapter extends ArrayAdapter<PointVo> implements
 
 	@Override
 	public void onPointsUpdate() {
+		updateList();
 		notifyDataSetChanged();
 	}
-
+	
+	private void updateList(){
+		CalibrationVo selCalibration = mController.getSelectedCalibration();
+		if(selCalibration != null){
+			mItems.clear();
+			int id = selCalibration.getId();
+			for(PointVo po : mAllItems){
+				if(id==po.getCalibrationId()){
+					mItems.add(po);
+				}
+			}
+		}
+	}
+		
 	private class Holder {
-		public TextView point_id;
+//		public TextView point_id;
 		public TextView before;
 		public TextView after;
-		public TextView calibration_id;
+//		public TextView calibration_id;
 		public CheckBox checkbox;
 	}
 

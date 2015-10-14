@@ -25,7 +25,7 @@ public class MainActivity extends Activity implements SensorEventListener,
 	private SensorManager mSensorManager;
 	private Sensor mLight;
 	private Controller mController;
-	private TextView mCurrVal, mAddedVal;
+	private TextView mCurrVal;
 	private Button mOpen;
 	private TextView mCurrCalibration;
 
@@ -37,7 +37,7 @@ public class MainActivity extends Activity implements SensorEventListener,
 		mLight = mSensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
 
 		mCurrVal = (TextView) findViewById(R.id.txt_curr);
-		mAddedVal = (TextView) findViewById(R.id.txt_curr_2);
+//		mAddedVal = (TextView) findViewById(R.id.txt_curr_2);
 		mCurrCalibration = (TextView) findViewById(R.id.calibrate_txt);
 		mOpen = (Button) findViewById(R.id.open_btn);
 		mOpen.setOnClickListener(new OnClickListener() {
@@ -90,8 +90,8 @@ public class MainActivity extends Activity implements SensorEventListener,
 
 	@Override
 	public void onValueChanged(SensorVo model) {
-		mCurrVal.setText(Float.toString(model.getValue()));
-		mAddedVal.setText(Float.toString(model.getValue() + 3));
+		mCurrVal.setText(Float.toString(model.getValue())+" lx");
+//		mAddedVal.setText(Float.toString(model.getValue() + 3));
 	}
 
 }
